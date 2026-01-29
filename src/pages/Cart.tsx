@@ -1,4 +1,4 @@
-import type { RootState } from "@reduxjs/toolkit/query"
+import type { RootState } from "../app/store"
 import { useDispatch, useSelector } from "react-redux"
 import { decrementQty, incrementQty, removeFromCart } from "../features/cart/cartSlice";
 
@@ -15,7 +15,7 @@ const Cart = () => {
                 const itemTotal = item.price * item.qty;
                 return <div key={item.id} className="cart-item">
                     <div className="cart-item-box">
-                        <img src={item.image} alt="" />
+                        <img src={item.thumbnail} alt="" />
                         <div className="qty">
                             <button onClick={() => dispatch(decrementQty(item.id))} disabled={item.qty <= 1}>-</button>
                             <p>Qty: {item.qty}</p>
