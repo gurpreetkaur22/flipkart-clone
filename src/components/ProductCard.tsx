@@ -4,12 +4,24 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { MdOutlineStarPurple500 } from "react-icons/md";
+import { IoIosHeartEmpty } from "react-icons/io";
+import { IoIosHeart } from "react-icons/io";
+
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product }: any) => {
   const dispatch = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
+  const [liked, setLiked] = useState(false);
   const { slug } = useParams();
   const currentSlug = slug || product.category;
+
+  const discountedPrice = product.price;
+  const discountPercent = product.discountPercentage;
+
+  const originalPrice =
+    discountedPrice / (1 - discountPercent / 100);
 
   return (
 
@@ -49,18 +61,28 @@ const ProductCard = ({ product }: any) => {
 
         {/* FRONT CONTENT */}
         <div className="card-front">
+          <IoIosHeartEmpty className="heart-empty"/>
           <div className="product-image">
             <img src={product.thumbnail} alt={product.title} />
           </div>
 
           <div className="product-content">
             <h4 className="truncate">{product.title}</h4>
-            <p className="price">$ {product.price}</p>
+            <p className="truncate-desc">{product.description}</p>
+            <div className='tags'>
+              <span style={{ color: "white" }}>{product.rating} <MdOutlineStarPurple500 />
+              </span>
+              <span style={{ backgroundColor: "white", border: "1px solid #eeeaea" }}>Stock: {product.stock}</span>
+            </div>
+            <p className="price">$ {product.price} &nbsp;          
+            <span style={{ color: "grey", textDecoration: "line-through", fontSize:'.8em' }}>${originalPrice.toFixed(2)}</span> &nbsp;
+            <span style={{fontSize:'.8em', color:"green"}}>{product.discountPercentage}%</span></p>
 
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 dispatch(addToCart(product));
+                toast.success("Added to cart 🛒");
               }}
             >
               Add to Cart
@@ -71,8 +93,8 @@ const ProductCard = ({ product }: any) => {
         {/* DETAILS CONTENT */}
         <div className="card-back">
           <h4>Description</h4>
-          <p>{product.description}</p>
-          <button style={{backgroundColor: "green"}}>Check in detail</button>
+          <p className="truncate-back" title={product.description}>{product.description}</p>
+          <button style={{ backgroundColor: "green" }}>Check in detail</button>
         </div></Link>
     </div>
   );
