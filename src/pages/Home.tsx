@@ -7,6 +7,7 @@ import HomeCaroursel from "../components/HomeCaroursel";
 import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import Loader from "../components/Loader";
 
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -51,7 +52,7 @@ const Home = () => {
     if (loading) {
         return (
             <div className="loading">
-                <h2>Loading...</h2>
+                <Loader />
             </div>
         );
     }
@@ -64,8 +65,8 @@ const Home = () => {
 
             <div className="categories-wrapper">
                 {showLeft && (
-                    <button className="cat-arrow left" onClick={scrollLeft}> 
-                        <FiChevronLeft/>
+                    <button className="cat-arrow left" onClick={scrollLeft}>
+                        <FiChevronLeft />
                     </button>
                 )}
                 <div className="categories" ref={scrollRef} onScroll={updateArrow}>
@@ -79,8 +80,8 @@ const Home = () => {
                     ))}
                 </div>
                 {showRight && (
-                    <button className="cat-arrow right" onClick={scrollRight}> 
-                        <FiChevronRight/>
+                    <button className="cat-arrow right" onClick={scrollRight}>
+                        <FiChevronRight />
                     </button>
                 )}
             </div>

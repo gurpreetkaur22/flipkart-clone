@@ -4,6 +4,7 @@ import type { AppDispatch, RootState } from "../app/store";
 import { useEffect, useState } from "react";
 import { clearProducts, getProductsByCategory } from "../features/products/productSlice";
 import ProductCard from "../components/ProductCard";
+import Loader from "../components/Loader";
 
 const Category = () => {
     const { slug } = useParams();
@@ -30,8 +31,8 @@ const Category = () => {
         const matchesPrice = p.price <= maxPrice;
         const matchesRating = p.rating >= minRating;
         const matchesSearch = p.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
         return matchesPrice && matchesRating && matchesSearch;
     });
 
@@ -66,9 +67,10 @@ const Category = () => {
                 </aside>
 
                 {/* products */}
+                <div>
                 {loading ? (
-                    <div className="loading">
-                        <h2>Loading Products...</h2>
+                    <div className="cat-loading">
+                        <Loader />
                     </div>
                 ) : (
                     <div className="product category-products">
@@ -83,8 +85,8 @@ const Category = () => {
                             </div>
                         )}
                     </div>
-
                 )}
+                </div>
             </div>
         </div>
     );

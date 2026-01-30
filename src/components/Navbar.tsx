@@ -5,8 +5,10 @@ import { logout } from "../features/auth/authSlice"
 import { BsCart3 } from "react-icons/bs";
 import { PiUserCircle } from "react-icons/pi";
 import { FiSearch } from "react-icons/fi";
+import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
 import { useState } from "react";
 import { getAllProducts, searchAllProducts, setSearchQuery } from "../features/products/productSlice";
+import type { Root } from "react-dom/client";
 
 const Navbar = () => {
 
@@ -29,6 +31,10 @@ const Navbar = () => {
         (state: RootState) => state.cart.length
     )
 
+    const likedCount = useSelector(
+        (state: RootState) => state.wishlist.items.length
+    )
+
     const isLoggedIn = useSelector(
         (state: RootState) => state.auth.isLoggedIn
     )
@@ -49,11 +55,12 @@ const Navbar = () => {
             </div>
 
             <div>
+                <Link to="/wishlist" className="nav-wishlist"> <IoIosHeartEmpty style={{color: 'black', fontSize:'1.7em', paddingTop:'.3em'}}/><span className="likes-count">{likedCount}</span></Link>
+                <Link to="/cart" className="cart"> <BsCart3 /><span className="count">{cartCount}</span></Link>
                 {!isLoggedIn ?
                     <Link to="/login" className="login"> <PiUserCircle /> <span>Login</span> </Link>
                     :
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>}
-                <Link to="/cart" className="cart"> <BsCart3 /><span className="count">{cartCount}</span></Link>
             </div>
         </nav>
     )

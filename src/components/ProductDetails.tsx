@@ -8,6 +8,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { addToCart } from '../features/cart/cartSlice';
 import { toast } from 'react-toastify';
+import { toggleWishlist } from '../features/wishlist/wishlistSlice';
+import { IoIosHeart, IoIosHeartEmpty } from 'react-icons/io';
+import Loader from './Loader';
 
 const ProductDetail = () => {
 
@@ -21,7 +24,18 @@ const ProductDetail = () => {
     }
   }, [id, dispatch]);
 
-  if (loading) return <div className="loading">Loading Product...</div>;
+
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.auth.isLoggedIn
+  )
+  const wishlist = useSelector(
+    (state: RootState) => state.wishlist.items
+  )
+
+  const isLiked = wishlist.some((p: any) => p.id === productDetail.id);
+
+
+  if (loading) return <div className="loading"><Loader/></div>;
   if (!productDetail) return <div>Product not found</div>;
 
   const discountedPrice = productDetail.price;
@@ -33,7 +47,24 @@ const ProductDetail = () => {
   return (
     <div className="product-detail">
       <div>
-        <div className='pd-img'>
+        <div className='pd-img' style={{ position: 'relative' }}>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (!isLoggedIn) {
+                toast.error("Please login to add to wishlist!");
+                return;
+              }
+              dispatch(toggleWishlist(productDetail));
+              toast.success(
+                (isLiked ? "Removed from wishlist" : "Added to wishlist")
+              )
+            }}
+            style={{ backgroundColor: 'transparent', border:'none' }}>
+            {isLiked ? <IoIosHeart className="pd-heart" /> : <IoIosHeartEmpty className="pd-heart-empty" />}
+          </button>
           <img src={productDetail.thumbnail} alt={productDetail.title} />
         </div>
         <div className="btns">
@@ -44,8 +75,8 @@ const ProductDetail = () => {
           }} style={{ backgroundColor: "orange" }}><FaShoppingCart /> Add to Cart</button>
           <button style={{ backgroundColor: "rgb(255, 119, 0)" }}><AiFillThunderbolt />Buy Now</button>
         </div>
-
       </div>
+
       <div className='detail-second-part'>
         <h1>{productDetail.title}</h1>
         <p className='p-desc'>{productDetail.description}</p>
@@ -97,7 +128,6 @@ const ProductDetail = () => {
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );

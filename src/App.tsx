@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar"
 import { ToastContainer } from "react-toastify"
 import Category from "./pages/Category"
 import ProductDetails from "./components/ProductDetails"
+import Wishlist from "./pages/Wishlist"
+import Footer from "./components/Footer"
 
 const App = () => {
   return (
@@ -20,15 +22,17 @@ const App = () => {
           <Route path="/category/:slug/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={
             <ProtectedRoute>
               <Cart />
             </ProtectedRoute>
           } />
         </Routes>
+        <Footer/>
       </BrowserRouter>
       <ToastContainer
-        position="top-right"
+        position="bottom-center"
         autoClose={2000}
         hideProgressBar={false}
         newestOnTop

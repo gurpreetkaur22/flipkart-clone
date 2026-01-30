@@ -7,14 +7,24 @@ import { Link, useParams } from "react-router-dom";
 import { MdOutlineStarPurple500 } from "react-icons/md";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { IoIosHeart } from "react-icons/io";
-
 import { toast } from "react-toastify";
+import type { RootState } from "../app/store";
+import { toggleWishlist } from "../features/wishlist/wishlistSlice";
 
 const ProductCard = ({ product }: any) => {
   const dispatch = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
-  const [liked, setLiked] = useState(false);
   const { slug } = useParams();
+
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.auth.isLoggedIn
+  )
+  const wishlist = useSelector(
+    (state: RootState) => state.wishlist.items
+  )
+
+  const isLiked = wishlist.some((p: any) => p.id === product.id);
+
   const currentSlug = slug || product.category;
 
   const discountedPrice = product.price;
@@ -55,38 +65,44 @@ const ProductCard = ({ product }: any) => {
         </div>
       )}
 
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          if (!isLoggedIn) {
+            toast.error("Please login to add to wishlist!");
+            return;
+          }
+          dispatch(toggleWishlist(product));
+          toast.success(
+            (isLiked ? "Removed from wishlist" : "Added to wishlist")
+          )
+        }}
+        style={{ backgroundColor: 'transparent' }}>
+        {isLiked ? <IoIosHeart className="heart" /> : <IoIosHeartEmpty className="heart-empty" />}
+      </button>
+
       <Link to={`/category/${currentSlug}/${product.id}`}
         className="card-link"
         style={{ textDecoration: 'none', color: 'inherit' }}>
 
         {/* FRONT CONTENT */}
         <div className="card-front">
-          <IoIosHeartEmpty className="heart-empty"/>
           <div className="product-image">
             <img src={product.thumbnail} alt={product.title} />
           </div>
 
           <div className="product-content">
-            <h4 className="truncate">{product.title}</h4>
-            <p className="truncate-desc">{product.description}</p>
+            <h4 className="truncate" title={product.title}>{product.title}</h4>
+            <p className="truncate-desc" style={{fontSize: '.8em'}} title={product.description}>{product.description}</p>
             <div className='tags'>
               <span style={{ color: "white" }}>{product.rating} <MdOutlineStarPurple500 />
               </span>
               <span style={{ backgroundColor: "white", border: "1px solid #eeeaea" }}>Stock: {product.stock}</span>
             </div>
-            <p className="price">$ {product.price} &nbsp;          
-            <span style={{ color: "grey", textDecoration: "line-through", fontSize:'.8em' }}>${originalPrice.toFixed(2)}</span> &nbsp;
-            <span style={{fontSize:'.8em', color:"green"}}>{product.discountPercentage}%</span></p>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                dispatch(addToCart(product));
-                toast.success("Added to cart 🛒");
-              }}
-            >
-              Add to Cart
-            </button>
+            <p className="price">$ {product.price} &nbsp;
+              <span style={{ color: "grey", textDecoration: "line-through", fontSize: '.8em' }}>${originalPrice.toFixed(2)}</span> &nbsp;
+              <span style={{ fontSize: '.8em', color: "green" }}>{product.discountPercentage}%</span></p>
           </div>
         </div>
 
@@ -96,6 +112,17 @@ const ProductCard = ({ product }: any) => {
           <p className="truncate-back" title={product.description}>{product.description}</p>
           <button style={{ backgroundColor: "green" }}>Check in detail</button>
         </div></Link>
+
+
+      <button style={{backgroundColor:'orange'}}
+        onClick={(e) => {
+          e.stopPropagation();
+          dispatch(addToCart(product));
+          toast.success("Added to cart 🛒");
+        }}
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };
