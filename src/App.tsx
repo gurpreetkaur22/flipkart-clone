@@ -13,24 +13,39 @@ import Footer from "./components/Footer"
 
 const App = () => {
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+
+      {/* LAYOUT WRAPPER */}
+      <div className="app-container">
+
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/category/:slug" element={<Category />} />
-          <Route path="/category/:slug/:id" element={<ProductDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/cart" element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          } />
-        </Routes>
-        <Footer/>
-      </BrowserRouter>
+
+        <div className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/category/:slug" element={<Category />} />
+            <Route path="/category/:slug/:id" element={<ProductDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/wishlist" element={
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/cart" element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+            />
+          </Routes>
+        </div>
+
+        <Footer />
+
+      </div>
+
       <ToastContainer
         position="bottom-center"
         autoClose={2000}
@@ -39,8 +54,10 @@ const App = () => {
         closeOnClick
         pauseOnHover
         draggable
-        theme="light" />
-    </>
+        theme="light"
+      />
+
+    </BrowserRouter>
   )
 }
 

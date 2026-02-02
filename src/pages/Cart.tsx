@@ -26,7 +26,7 @@ const Cart = () => {
                         <h4>{item.title}</h4>
                         <p>$ {itemTotal.toFixed(2)}</p>
                     </div>
-                    <button onClick={() => dispatch(removeFromCart(item.id))}>
+                    <button className="remove-btn" onClick={() => dispatch(removeFromCart(item.id))}>
                         Remove
                     </button>
                 </div>

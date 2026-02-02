@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const wishlistSlice = createSlice({
     name: "wishlist",
     initialState: {
-        items: [] as any [],
+        items: JSON.parse(localStorage.getItem("wishlist") || "[]") as any [],
     },
     reducers: {
         toggleWishlist: (state, action) => {
@@ -13,6 +13,7 @@ const wishlistSlice = createSlice({
             } else {
                 state.items.push(action.payload);
             }
+            localStorage.setItem("wishlist",JSON.stringify(state.items));
         }
     }
 })

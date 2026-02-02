@@ -10,13 +10,18 @@ const Category = () => {
     const { slug } = useParams();
     const dispatch = useDispatch<AppDispatch>();
 
-    const { products, loading, searchQuery } = useSelector(
+    const { products, categoriesLoading, searchQuery } = useSelector(
         (state: RootState) => state.products
     );
 
     // 🔹 FILTER STATE
     const [maxPrice, setMaxPrice] = useState(2000);
     const [minRating, setMinRating] = useState(0);
+
+    const prices = products.map((p: any) => p.price);
+
+    const minProductPrice = prices.length ? Math.min(...prices) : 0;
+    const maxProductPrice = prices.length ? Math.max(...prices) : 0;
 
     useEffect(() => {
         if (slug) dispatch(getProductsByCategory(slug));
@@ -26,7 +31,11 @@ const Category = () => {
         };
     }, [slug, dispatch]);
 
-    // 🔹 APPLY FILTERS
+    useEffect(() => {
+        setMaxPrice(maxProductPrice);
+    }, [maxProductPrice]);
+
+    // APPLY FILTERS
     const filteredProducts = products.filter((p: any) => {
         const matchesPrice = p.price <= maxPrice;
         const matchesRating = p.rating >= minRating;
@@ -49,8 +58,8 @@ const Category = () => {
                         <label>Max Price: ${maxPrice}</label>
                         <input
                             type="range"
-                            min="0"
-                            max="5000"
+                            min={minProductPrice}
+                            max={maxProductPrice}
                             value={maxPrice}
                             onChange={(e) => setMaxPrice(+e.target.value)}
                         />
@@ -67,26 +76,26 @@ const Category = () => {
                 </aside>
 
                 {/* products */}
-                <div>
-                {loading ? (
-                    <div className="cat-loading">
-                        <Loader />
-                    </div>
-                ) : (
-                    <div className="product category-products">
-                        {filteredProducts.length > 0 ? (
-                            filteredProducts.map((p: any) => (
-                                <ProductCard key={p.id} product={p} />
-                            ))
-                        ) : (
-                            <div className="no-products">
-                                <h3>No products found</h3>
-                                <p>Try adjusting your filters.</p>
-                            </div>
-                        )}
-                    </div>
-                )}
-                </div>
+                <section className="products-wrapper">
+                    {categoriesLoading ? (
+                        <div className="cat-loading">
+                            <Loader />
+                        </div>
+                    ) : (
+                        <div className="product category-products">
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map((p: any) => (
+                                    <ProductCard key={p.id} product={p} />
+                                ))
+                            ) : (
+                                <div className="no-products">
+                                    <h3>No products found</h3>
+                                    <p>Try adjusting your filters.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </section>
             </div>
         </div>
     );

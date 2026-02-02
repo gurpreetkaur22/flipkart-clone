@@ -51,7 +51,12 @@ const Navbar = () => {
             {/* search */}
             <div className={`search-box ${showSearch ? 'active' : ''}`}>
                 <input type="text" placeholder="Search products..." onChange={handleSearch} />
-                <FiSearch className="search" onClick={() => setShowSearch(!showSearch)} />
+                <FiSearch className="search" onClick={() => {
+                    setShowSearch(!showSearch);
+                    if(showSearch) {
+                        setSearchQuery("");
+                    }
+                }} />
             </div>
 
             <div>

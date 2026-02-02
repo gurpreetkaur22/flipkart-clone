@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch } from "../app/store"
 import type { RootState } from "../app/store";
 import { useEffect, useRef, useState } from "react";
-import { getCategories, getCategoryCards, getAllProducts } from "../features/products/productSlice";
+import { getCategories, getCategoryCards, getAllProducts, loadHomeData } from "../features/products/productSlice";
 import HomeCaroursel from "../components/HomeCaroursel";
 import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
@@ -12,7 +12,7 @@ import Loader from "../components/Loader";
 const Home = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const { products, categories, categoryCards, loading } = useSelector(
+    const { products, categories, categoryCards, homeLoading } = useSelector(
         (state: RootState) => state.products
     );
 
@@ -20,7 +20,7 @@ const Home = () => {
     const [showLeft, setShowLeft] = useState(false);
     const [showRight, setShowRight] = useState(true);
 
-    const scrollAmount = 600;
+    const scrollAmount = 500;
 
     const updateArrow = () => {
         const el = scrollRef.current;
@@ -39,17 +39,10 @@ const Home = () => {
     }
 
     useEffect(() => {
-        dispatch(getCategories());
-        dispatch(getAllProducts());
+        dispatch(loadHomeData());
     }, [dispatch]);
 
-    useEffect(() => {
-        if (categories.length) {
-            dispatch(getCategoryCards(categories));
-        }
-    }, [categories]);
-
-    if (loading) {
+    if (homeLoading) {
         return (
             <div className="loading">
                 <Loader />

@@ -16,7 +16,7 @@ const ProductDetail = () => {
 
   const { slug, id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { productDetail, loading } = useSelector((state: RootState) => state.products);
+  const { productDetail, productsLoading } = useSelector((state: RootState) => state.products);
 
   useEffect(() => {
     if (id) {
@@ -31,11 +31,14 @@ const ProductDetail = () => {
   const wishlist = useSelector(
     (state: RootState) => state.wishlist.items
   )
+  const cart = useSelector(
+    (state: RootState) => state.cart
+  )
 
-  const isLiked = wishlist.some((p: any) => p.id === productDetail.id);
+  const isLiked = productDetail && wishlist.some((p: any) => p.id === productDetail?.id);
+  const alreadyInCart = productDetail ? cart.some((p: any) => p.id === productDetail.id) : false;
 
-
-  if (loading) return <div className="loading"><Loader/></div>;
+  if (productsLoading) return <div className="loading"><Loader /></div>;
   if (!productDetail) return <div>Product not found</div>;
 
   const discountedPrice = productDetail.price;
@@ -52,7 +55,6 @@ const ProductDetail = () => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              e.preventDefault();
               if (!isLoggedIn) {
                 toast.error("Please login to add to wishlist!");
                 return;
@@ -62,18 +64,25 @@ const ProductDetail = () => {
                 (isLiked ? "Removed from wishlist" : "Added to wishlist")
               )
             }}
-            style={{ backgroundColor: 'transparent', border:'none' }}>
+            style={{ backgroundColor: 'transparent', border: 'none' }}>
             {isLiked ? <IoIosHeart className="pd-heart" /> : <IoIosHeartEmpty className="pd-heart-empty" />}
           </button>
           <img src={productDetail.thumbnail} alt={productDetail.title} />
         </div>
         <div className="btns">
           <button onClick={() => {
+            if (alreadyInCart) {
+              toast.info("Product already in cart");
+              return;
+            }
             dispatch(addToCart(productDetail));
             toast.success("Added to cart 🛒")
 
-          }} style={{ backgroundColor: "orange" }}><FaShoppingCart /> Add to Cart</button>
-          <button style={{ backgroundColor: "rgb(255, 119, 0)" }}><AiFillThunderbolt />Buy Now</button>
+          }} style={{ backgroundColor: "orange", cursor: "pointer" }}><FaShoppingCart /> Add to Cart</button>
+          <button onClick={() => {
+            
+          }}
+            style={{ backgroundColor: "rgb(255, 119, 0)", cursor: "pointer" }}><AiFillThunderbolt />Buy Now</button>
         </div>
       </div>
 

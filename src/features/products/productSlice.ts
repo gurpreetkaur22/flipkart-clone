@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchAllProducts, fetchCategories, fetchProductByCategory, fetchProductById, searchProducts } from "../../services/productApi";
+import type { AppDispatch } from "../../app/store";
 
 export const getCategories = createAsyncThunk(
   "products/categories",
@@ -10,7 +11,6 @@ export const getProductsByCategory = createAsyncThunk(
   "products/byCategory",
   async (category: string) => await fetchProductByCategory(category)
 )
-
 
 export const getCategoryCards = createAsyncThunk(
   "products/categoryCards",
@@ -49,6 +49,25 @@ export const searchAllProducts = createAsyncThunk(
   }
 )
 
+export const loadHomeData = createAsyncThunk(
+  "products/loadHomeData",
+  async (_, { dispatch, getState }) => {
+
+    await dispatch(getCategories()).unwrap();
+
+    const state: any = getState();
+    const cats = state.products.categories;
+
+    await Promise.all([
+      dispatch(getAllProducts()).unwrap(),
+      dispatch(getCategoryCards(cats)).unwrap(),
+    ]);
+
+    return true;
+  }
+);
+
+
 interface ProductState {
   categories: any[],
   categoryCards: {
@@ -59,7 +78,10 @@ interface ProductState {
   products: any[],
   productDetail: any | null,
   selectedCategory: string | null,
-  loading: boolean,
+  productsLoading: boolean,
+  categoriesLoading: boolean,
+  cardsLoading: boolean,
+  homeLoading: boolean,
   searchQuery: string
 }
 
@@ -69,7 +91,10 @@ const initialState: ProductState = {
   products: [],
   productDetail: null,
   selectedCategory: null,
-  loading: false,
+  productsLoading: false,
+  categoriesLoading: false,
+  cardsLoading: false,
+  homeLoading: false,
   searchQuery: ""
 }
 
@@ -90,58 +115,90 @@ const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
+      //home
+      .addCase(loadHomeData.pending, (state) => {
+        state.homeLoading = true;
+      })
+      .addCase(loadHomeData.fulfilled, (state) => {
+        state.homeLoading = false;
+      })
+      .addCase(loadHomeData.rejected, (state) => {
+        state.homeLoading = false;
+      })
+
       // categories
+      .addCase(getCategories.pending, (state) => {
+        state.categoriesLoading = true;
+      })
       .addCase(getCategories.fulfilled, (state, action) => {
         state.categories = action.payload;
+        state.categoriesLoading = false;
+      })
+      .addCase(getCategories.rejected, (state) => {
+        state.categoriesLoading = false;
       })
 
       //productsByCategory
       .addCase(getProductsByCategory.pending, (state) => {
-        state.loading = true;
+        state.categoriesLoading = true;
       })
       .addCase(getProductsByCategory.fulfilled, (state, action) => {
-        state.products = action.payload,
-          state.loading = false;
+        state.products = action.payload;
+        state.categoriesLoading = false;
+      })
+      .addCase(getProductsByCategory.rejected, (state) => {
+        state.categoriesLoading = false;
       })
 
       // category cards
       .addCase(getCategoryCards.pending, (state) => {
-        state.loading = true;
+        state.cardsLoading = true;
       })
 
       .addCase(getCategoryCards.fulfilled, (state, action) => {
         state.categoryCards = action.payload;
-        state.loading = false;
+        state.cardsLoading = false;
+      })
+      .addCase(getCategoryCards.rejected, (state) => {
+        state.cardsLoading = false;
       })
 
       //productById
       .addCase(getProductById.pending, (state) => {
-        state.loading = true;
+        state.productsLoading = true;
         state.productDetail = null;
       })
       .addCase(getProductById.fulfilled, (state, action) => {
         state.productDetail = action.payload;
-        state.loading = false;
+        state.productsLoading = false;
+      })
+      .addCase(getProductById.rejected, (state) => {
+        state.productsLoading = false;
       })
 
       //all products 
       .addCase(getAllProducts.pending, (state) => {
-        state.loading = true;
+        state.productsLoading = true;
       })
       .addCase(getAllProducts.fulfilled, (state, action) => {
         state.products = action.payload;
-        state.loading = false;
+        state.productsLoading = false;
+      })
+      .addCase(getAllProducts.rejected, (state) => {
+        state.productsLoading = false;
       })
 
       //search
       .addCase(searchAllProducts.pending, (state) => {
-        state.loading = true;
+        state.productsLoading = true;
       })
       .addCase(searchAllProducts.fulfilled, (state, action) => {
         state.products = action.payload;
-        state.loading = false;
-      });
-      
+        state.productsLoading = false;
+      })
+      .addCase(searchAllProducts.rejected, (state) => {
+        state.productsLoading = false;
+      })
   }
 })
 

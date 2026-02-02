@@ -23,7 +23,12 @@ const ProductCard = ({ product }: any) => {
     (state: RootState) => state.wishlist.items
   )
 
-  const isLiked = wishlist.some((p: any) => p.id === product.id);
+  const cart = useSelector(
+    (state: RootState) => state.cart
+  )
+
+  const isLiked = product && wishlist.some((p: any) => p.id === product?.id);
+  const alreadyInCart = cart.some((p: any) => p.id === product.id);
 
   const currentSlug = slug || product.category;
 
@@ -78,7 +83,7 @@ const ProductCard = ({ product }: any) => {
             (isLiked ? "Removed from wishlist" : "Added to wishlist")
           )
         }}
-        style={{ backgroundColor: 'transparent' }}>
+        style={{ backgroundColor: 'transparent', border:'none', cursor:"pointer" }}>
         {isLiked ? <IoIosHeart className="heart" /> : <IoIosHeartEmpty className="heart-empty" />}
       </button>
 
@@ -94,7 +99,7 @@ const ProductCard = ({ product }: any) => {
 
           <div className="product-content">
             <h4 className="truncate" title={product.title}>{product.title}</h4>
-            <p className="truncate-desc" style={{fontSize: '.8em'}} title={product.description}>{product.description}</p>
+            <p className="truncate-desc" style={{ fontSize: '.8em' }} title={product.description}>{product.description}</p>
             <div className='tags'>
               <span style={{ color: "white" }}>{product.rating} <MdOutlineStarPurple500 />
               </span>
@@ -109,14 +114,24 @@ const ProductCard = ({ product }: any) => {
         {/* DETAILS CONTENT */}
         <div className="card-back">
           <h4>Description</h4>
+          <div className="tags">
+            {product.tags.map((tag: string) => (
+              <span key={tag} className="tag">{tag}</span>
+            ))}
+          </div>
+          <h5 style={{margin:0, textAlign:'center'}}>Brand: {(product.brand) ? product.brand : product.category}</h5>
           <p className="truncate-back" title={product.description}>{product.description}</p>
-          <button style={{ backgroundColor: "green" }}>Check in detail</button>
+          <button className="detail-btn">Check in detail</button>
         </div></Link>
 
 
-      <button style={{backgroundColor:'orange'}}
+      <button className="cart-btn"
         onClick={(e) => {
           e.stopPropagation();
+          if (alreadyInCart) {
+            toast.info("Product already in cart");
+            return;
+          }
           dispatch(addToCart(product));
           toast.success("Added to cart 🛒");
         }}
