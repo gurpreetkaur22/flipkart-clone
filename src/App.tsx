@@ -19,7 +19,6 @@ const App = () => {
       <div className="app-container">
 
         <Navbar />
-
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -32,7 +31,6 @@ const App = () => {
                 <Wishlist />
               </ProtectedRoute>
             } />
-
             <Route path="/cart" element={
               <ProtectedRoute>
                 <Cart />

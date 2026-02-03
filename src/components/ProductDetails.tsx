@@ -92,7 +92,14 @@ const ProductDetail = () => {
               navigate("/login");
               return;
             }
-
+            if(productDetail.stock === 0) {
+              toast.error("Product is out of stock!");
+            }
+            if(!alreadyInCart) {
+              dispatch(addToCart(productDetail));
+            }
+            // toast.success("Proceeding to checkout");
+            navigate('/cart');
           }}
 
             style={{ backgroundColor: "rgb(255, 119, 0)", cursor: "pointer" }}><AiFillThunderbolt />Buy Now</button>
