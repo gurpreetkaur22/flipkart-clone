@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../app/store';
 import { getProductById } from '../features/products/productSlice';
@@ -17,6 +17,7 @@ const ProductDetail = () => {
   const { slug, id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { productDetail, productsLoading } = useSelector((state: RootState) => state.products);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -71,6 +72,12 @@ const ProductDetail = () => {
         </div>
         <div className="btns">
           <button onClick={() => {
+            if (!isLoggedIn) {
+              toast.error("Please login to continue");
+              navigate("/login");
+              return;
+            }
+
             if (alreadyInCart) {
               toast.info("Product already in cart");
               return;
@@ -80,8 +87,14 @@ const ProductDetail = () => {
 
           }} style={{ backgroundColor: "orange", cursor: "pointer" }}><FaShoppingCart /> Add to Cart</button>
           <button onClick={() => {
-            
+            if (!isLoggedIn) {
+              toast.error("Please login to continue");
+              navigate("/login");
+              return;
+            }
+
           }}
+
             style={{ backgroundColor: "rgb(255, 119, 0)", cursor: "pointer" }}><AiFillThunderbolt />Buy Now</button>
         </div>
       </div>

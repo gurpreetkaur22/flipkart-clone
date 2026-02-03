@@ -734,7 +734,7 @@ nav .count {
 
 .product-detail .pd-img {
   border: 2px solid #eeeaea;
-  /* border-radius: 1em; */
+  border-radius: .5em;
   display: flex;
   justify-content: center;
 }
@@ -784,8 +784,8 @@ h1,
   text-transform: uppercase;
   background-color: #fff;
   font-weight: bold;
+  border-radius: .5em;
 }
-
 
 .pd-heart-empty,
 .pd-heart {
