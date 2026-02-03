@@ -9,6 +9,7 @@ import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
 import { useState } from "react";
 import { getAllProducts, searchAllProducts, setSearchQuery } from "../features/products/productSlice";
 import type { Root } from "react-dom/client";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
 
@@ -39,9 +40,14 @@ const Navbar = () => {
         (state: RootState) => state.auth.isLoggedIn
     )
 
+    const searchQuery = useSelector(
+        (state: RootState) => state.products.searchQuery
+    )
+
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
+        toast.success("User logged out successfully!")
     }
 
     return (
@@ -50,7 +56,7 @@ const Navbar = () => {
 
             {/* search */}
             <div className={`search-box ${showSearch ? 'active' : ''}`}>
-                <input type="text" placeholder="Search products..." onChange={handleSearch} />
+                <input type="text" placeholder="Search products..." value={searchQuery} onChange={handleSearch} />
                 <FiSearch className="search" onClick={() => {
                     setShowSearch(!showSearch);
                     if(showSearch) {

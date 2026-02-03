@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/auth/authSlice";
+import { toast } from "react-toastify";
 
 const Login = () => {
 
@@ -10,6 +11,7 @@ const Login = () => {
     const handleLogin = () => {
         dispatch(login());
         navigate("/");
+        toast.success("User logged in successfully!")
     }
 
     return (

@@ -1,6 +1,7 @@
 import type { RootState } from "../app/store"
 import { useDispatch, useSelector } from "react-redux"
 import { decrementQty, incrementQty, removeFromCart } from "../features/cart/cartSlice";
+import { toast } from "react-toastify";
 
 const Cart = () => {
 
@@ -17,16 +18,25 @@ const Cart = () => {
                     <div className="cart-item-box">
                         <img src={item.thumbnail} alt="" />
                         <div className="qty">
-                            <button onClick={() => dispatch(decrementQty(item.id))} disabled={item.qty <= 1}>-</button>
+                            <button onClick={() => {
+                                dispatch(decrementQty(item.id))
+                                toast.success(`Quantity decreased to ${item.qty-1}`)
+                                }} disabled={item.qty <= 1}>-</button>
                             <p>Qty: {item.qty}</p>
-                            <button onClick={() => dispatch(incrementQty(item.id))}>+</button>
+                            <button onClick={() => {
+                                dispatch(incrementQty(item.id))
+                                toast.success(`Quantity increased to ${item.qty+1}`)
+                                }}>+</button>
                         </div>
                     </div>
                     <div className="cart-item-box">
                         <h4>{item.title}</h4>
                         <p>$ {itemTotal.toFixed(2)}</p>
                     </div>
-                    <button className="remove-btn" onClick={() => dispatch(removeFromCart(item.id))}>
+                    <button className="remove-btn" onClick={() => {
+                        dispatch(removeFromCart(item.id))
+                        toast.success("Item removed successfully!")
+                        }}>
                         Remove
                     </button>
                 </div>
