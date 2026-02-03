@@ -1121,6 +1121,25 @@ height: 15px;
   color: green;
 }
 
+/* wishlist */
+
+.empty-wishlist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5em;
+}
+
+.empty-wishlist img {
+  width: 300px;
+}
+
+.empty-wishlist h1 {
+  font-size: 1.3em;
+  margin-top: 0;
+}
+
 /* tablet view */
 
 @media (min-width: 768px) {
@@ -1377,4 +1396,16 @@ height: 15px;
     background-color: #000000d1;
     padding: .5em 1em;
   }
+
+  /* wishlist */
+
+
+.empty-wishlist img {
+  width: 500px;
+}
+
+.empty-wishlist h1 {
+  font-size: 1.8em;
+  margin-top: 0;
+}
 }

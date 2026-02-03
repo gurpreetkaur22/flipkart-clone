@@ -26,21 +26,6 @@ const Cart = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     })
 
-    const handlePlaceOrder = () => {
-        if (
-            !form.name || !form.phone || !form.address || !form.city || !form.pincode
-        ) {
-            toast.error("Please fill all the address details!");
-            return;
-        }
-        toast.success("Order placed successfully 🎉");
-        dispatch(clearCart());
-        setShowModal(false);
-        setTimeout(() => {
-            navigate('/');
-        }, 800);
-    }
-
     if (cart.length === 0) return <div className="empty-cart">
         <img src="https://rukminim2.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90" width={400} alt="" />
         <h2>Cart is empty</h2>
@@ -113,7 +98,13 @@ const Cart = () => {
                     </div>
                     <button
                         className="checkout-btn"
-                        onClick={handlePlaceOrder}
+                        onClick={()=> {
+                            if(!form.name || !form.phone || !form.address || !form.city || !form.pincode) {
+                                toast.error("Please fill all the address details!");
+                                return;
+                            }
+                            setShowModal(true);
+                        }}
                     >
                         Place Order
                     </button>

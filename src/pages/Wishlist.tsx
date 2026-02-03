@@ -5,7 +5,10 @@ import ProductCard from "../components/ProductCard";
 const Wishlist = () => {
     const wishlist = useSelector((state: RootState) => state.wishlist.items);
 
-    if (!wishlist.length) return <h1 style={{ textAlign: 'center', marginTop: '10%' }}>No items in wishlist</h1>;
+    if (!wishlist.length) return <div className="empty-wishlist">
+        <img src="https://static.oxinis.com/healthmug/image/healthmug/empty-wishlist.webp" alt="" />
+        <h1>No items in wishlist</h1>
+    </div>;
 
     return (
         <div>
